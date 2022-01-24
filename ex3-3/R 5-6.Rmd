@@ -1,0 +1,47 @@
+---
+title: "R Notebook"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+expend <- read.table('expenditures.txt',sep = '\t', header = TRUE)
+```
+
+```{r}
+library(treemap)
+treemap(expend,
+        index = c('year', 'category'),
+        vSize = 'expenditure',
+        type = 'index',
+        fontsize.labels = c(10,8),
+        fontcolor.labels = c('black', 'white'),
+        align.labels = list(c('left','top'),
+                            c('left', 'bottom')),
+        overlap.labels = .8,
+        title = 'Expenditure by Year and Category',
+        lowerbound.cex.labels = 0.15,
+        ymod.labels = c(0,.03)
+        )
+```
+
+```{r}
+library(ggplot2)
+library(data.table)
+expend2 <- setkey(setDT(expend), year)[,list(expenditure= sum(expenditure)), by= list(year)]
+
+ggplot(expend2, aes(x= year))+ geom_ribbon(aes(ymin=0, ymax=expenditure), fill= 'blue') + ylab('expenditure ($)') + scale_x_continuous(n.breaks = 14) + ggtitle('Areamap in R', subtitle = 'Expenditure by Year')
+```
+
+```{r}
+library(RColorBrewer)
+mycolors = c(brewer.pal(name="Set1", n = 8), brewer.pal(name="Dark2", n = 6))
+
+ggplot(expend, aes(x= year, fill= category)) + geom_area(aes( y=expenditure), position = 'stack', outline.type = 'both') + ylab('expenditure ($)') + scale_x_continuous(n.breaks = 14) + ggtitle('Stacked Areamap in R', subtitle = 'Expenditure by Year') + scale_fill_manual(values = (mycolors))
+
+```
