@@ -1,0 +1,25 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+ppg <- read.csv('ppg2008.csv')
+costco <- read.csv("costcos-geocoded.csv")
+```
+
+```{r}
+library(ggplot2)
+library(reshape2)
+full <- melt(cor(ppg[2:21]))
+ggplot(full, aes(x = Var1, y = Var2, fill= value )) + geom_tile()+ scale_fill_gradient2(low="blue", high="red")
+```
+
+```{r}
+ggplot(costco, aes(y= Latitude, x= Longitude))  + borders(database = "state", fill= 'lightgray') + geom_point(alpha= .3, color= 'red') + theme_bw()
+```
+
+```{r}
+ggplot(ppg, aes(x= MIN, y= PTS)) + geom_point() + geom_density2d(aes(color = ..level..), show.legend = TRUE)
+```
+
