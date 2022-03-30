@@ -1,0 +1,44 @@
+---
+title: "R Notebook"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+```{r}
+setwd("C:/Users/aarme/OneDrive/Desktop/640/ex6-2")
+library(readxl)
+ed1 <- read.csv("ed_clean.csv", check.names = FALSE)
+
+```
+
+```{r}
+library(ggplot2)
+val <- as.matrix(ed1[,2:16])
+val <- as.vector(val)
+ggplot() + geom_histogram(aes(val), fill= 'blue') + ggtitle('Histogram in R', subtitle = 'Histogram of all Scores') + xlab('score')
+```
+
+```{r}
+ggplot(stack(ed1[2:16]), aes(x= ind, y = values))  + geom_boxplot(fill = "white", colour = "#3366FF") + theme(axis.text.x = element_text(angle = 90, hjust =  (.9))) + xlab('') +ggtitle('Boxplot in R', subtitle = 'SAT scores by year and subject')
+```
+
+```{r}
+library(dplyr)
+wr = ed1[,c(1,16)]
+colnames(wr) = c("state", "Writing_2008_09")
+bullet_base <- data.frame(rank = c( "Ok", "Good", "Excellent"),
+  value = c(min(val), median(val) - min(val), max(val) - median(val)))
+bullet_base_rep <- 
+  do.call("rbind", replicate(nrow(ed1), bullet_base, simplify = FALSE)) %>%
+  mutate(name = sort(rep(ed1$State, 3) ))
+dev.new(width=5, height=15)
+ggplot() + geom_bar(data = bullet_base_rep, aes(x = name, y = value, fill = rank), stat = "identity", position = "stack", width = .9, alpha= .8) + geom_bar(data=wr, aes(x= state, y = Writing_2008_09 ), stat = 'identity', width = .3, color= 'black') + scale_fill_manual(values = c("darkgreen", "green", 'lightgreen')) + geom_errorbar(data = ed1[1:16], aes(x= State, ymin= rowMeans(ed1[2:16]), ymax= rowMeans(ed1[2:16])), color= 'red', width= 1.5) + coord_flip() + ggtitle('Bullet Chat in R', subtitle = '2008-09 Writing SAT perfomance') + ylab('score') + xlab('') + theme(panel.background = element_blank())
+```
+
+```{r}
+library(ggridges)
+ed2 <- cbind(ed1[1], stack(ed1[2:16]))
+ggplot(data = ed2, aes(x= values, y= State, fill= State) ) +geom_density_ridges(show.legend = FALSE) + ggtitle('Ridge plot in R', subtitle = 'Density by State') + theme(panel.background = element_blank())
+```
+

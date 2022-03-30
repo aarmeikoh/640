@@ -1,6 +1,8 @@
 ---
 title: "R Notebook"
-output: html_notebook
+output:
+  pdf_document: default
+  html_notebook: default
 ---
 
 ```{r}
@@ -12,14 +14,14 @@ costco <- read.csv("costcos-geocoded.csv")
 library(ggplot2)
 library(reshape2)
 full <- melt(cor(ppg[2:21]))
-ggplot(full, aes(x = Var1, y = Var2, fill= value )) + geom_tile()+ scale_fill_gradient2(low="blue", high="red")
+ggplot(full, aes(x = Var1, y = Var2, fill= value )) + geom_tile()+ scale_fill_gradient2(low="blue", high="red") + ggtitle('Heat Map in R', subtitle = 'Correlation Map for ppg') + xlab('') + ylab('')
 ```
 
 ```{r}
-ggplot(costco, aes(y= Latitude, x= Longitude))  + borders(database = "state", fill= 'lightgray') + geom_point(alpha= .3, color= 'red') + theme_bw()
+ggplot(costco, aes(y= Latitude, x= Longitude))  + borders(database = "state", fill= 'lightgreen') + geom_point(alpha= 0.3, color= 'red') + theme_bw() + ggtitle('Spatial Chart in R', subtitle = 'Costco Locations in USA') + xlab('') + ylab('')
 ```
 
 ```{r}
-ggplot(ppg, aes(x= MIN, y= PTS)) + geom_point() + geom_density2d(aes(color = ..level..), show.legend = TRUE)
+ggplot(ppg, aes(x= MIN, y= PTS)) + geom_point() + geom_density2d(aes(color = ..level..), show.legend = TRUE) + ggtitle('Contour Chart in R', subtitle = 'Distribution Density for PTS & MIN')
 ```
 
